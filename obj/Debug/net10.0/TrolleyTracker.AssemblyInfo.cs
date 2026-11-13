@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TrolleyTracker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+878a5d702d9234f79fdb8743695b6be9ba93380d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca33c30c48f9442f5ca3fff6c7ad5922f7a942d5")]
 [assembly: System.Reflection.AssemblyProductAttribute("TrolleyTracker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TrolleyTracker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

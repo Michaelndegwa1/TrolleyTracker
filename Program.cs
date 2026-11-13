@@ -28,5 +28,71 @@ app.MapGet("/vendors/{code}", (string code) =>
     var vendor = vendors.FirstOrDefault(v => v.Code == code);
     return vendor is null ? Results.NotFound() : Results.Ok(vendor);
 });
+// ---------- PAYMENTS ----------
+var payments = new List<Payment>();
+var nextPaymentId = 1;
 
+// POST /payments  -> record a payment
+app.MapPost("/payments", (NewPayment input) =>
+{
+    var vendor = vendors.FirstOrDefault(v => v.Code == input.VendorCode);
+    if (vendor is null)
+        return Results.BadRequest($"No vendor with code {input.VendorCode}");
+
+    // Stop the same M-Pesa payment being counted twice
+    if (payments.Any(p => p.MpesaCode == input.MpesaCode))
+        return Results.Conflict($"M-Pesa code {input.MpesaCode} was already recorded");
+
+    var payment = new Payment
+    {
+        Id = nextPaymentId++,
+        VendorId = vendor.Id,
+        Amount = input.Amount,
+        MpesaCode = input.MpesaCode,
+        PaidAt = DateTime.Now
+    };
+    payments.Add(payment);
+
+    return Results.Created($"/payments/{payment.Id}", payment);
+});
+
+// GET /payments  -> all payments
+app.MapGet("/payments", () => payments);
+
+// GET /today  -> who has paid today and who hasn't
+app.MapGet("/today", () =>
+{
+    var today = DateOnly.FromDateTime(DateTime.Now);
+
+    // Total paid today per vendor: { vendorId: total }
+    var totals = payments
+        .Where(p => DateOnly.FromDateTime(p.PaidAt) == today)
+        .GroupBy(p => p.VendorId)
+        .ToDictionary(g => g.Key, g => g.Sum(p => p.Amount));
+
+    var report = vendors
+        .Where(v => v.IsActive)
+        .Select(v =>
+        {
+            var paid = totals.GetValueOrDefault(v.Id); // 0 if they haven't paid
+            var owed = Math.Max(0, v.DailyAmount - paid);
+            return new
+            {
+                v.Code,
+                v.Name,
+                PaidToday = paid,
+                Owed = owed,
+                Status = owed == 0 ? "PAID" : (paid > 0 ? "PARTIAL" : "NOT PAID")
+            };
+        })
+        .ToList();
+
+    return new
+    {
+        Date = today,
+        TotalCollected = report.Sum(r => r.PaidToday),
+        Expected = vendors.Where(v => v.IsActive).Sum(v => v.DailyAmount),
+        Vendors = report
+    };
+});
 app.Run();
