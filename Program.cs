@@ -1,41 +1,31 @@
-var builder = WebApplication.CreateBuilder(args);
+using TrolleyTracker.Models;
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
-
-var summaries = new[]
+// Sample vendors kept in memory for now (a database comes in Step 5)
+var vendors = new List<Vendor>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    new Vendor { Id = 1, Code = "V01", Name = "John Kamau",   Phone = "0712345678", ContractStart = new DateOnly(2026, 12, 1) },
+    new Vendor { Id = 2, Code = "V02", Name = "Mary Wanjiku", Phone = "0723456789", ContractStart = new DateOnly(2026, 12, 1) },
+    new Vendor { Id = 3, Code = "V03", Name = "Peter Otieno", Phone = "0734567890", ContractStart = new DateOnly(2026, 12, 1) },
 };
 
-app.MapGet("/weatherforecast", () =>
+// GET /vendors  -> list all vendors
+app.MapGet("/vendors", () => vendors);
+
+// GET /vendors/V01  -> one vendor by code
+app.MapGet("/vendors/{code}", (string code) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    var vendor = vendors.FirstOrDefault(v => v.Code == code);
+    return vendor is null ? Results.NotFound() : Results.Ok(vendor);
+});
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
