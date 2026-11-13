@@ -1,0 +1,6 @@
+@TrolleyTracker_HostAddress = http://localhost:5070
+
+GET {{TrolleyTracker_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
