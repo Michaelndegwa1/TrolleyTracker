@@ -16,6 +16,7 @@ var vendors = new List<Vendor>
     new Vendor { Id = 1, Code = "V01", Name = "John Kamau",   Phone = "0712345678", ContractStart = new DateOnly(2026, 12, 1) },
     new Vendor { Id = 2, Code = "V02", Name = "Mary Wanjiku", Phone = "0723456789", ContractStart = new DateOnly(2026, 12, 1) },
     new Vendor { Id = 3, Code = "V03", Name = "Peter Otieno", Phone = "0734567890", ContractStart = new DateOnly(2026, 12, 1) },
+    new Vendor { Id = 4, Code = "V04", Name = "Alice Akinyi", Phone = "0745678901", ContractStart = new DateOnly(2026, 12, 1) },
 };
 
 // GET /vendors  -> list all vendors
