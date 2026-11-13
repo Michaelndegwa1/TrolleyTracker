@@ -31,3 +31,4 @@ C:\Users\ADMIN\TrolleyTracker\obj\Debug\net10.0\refint\TrolleyTracker.dll
 C:\Users\ADMIN\TrolleyTracker\obj\Debug\net10.0\TrolleyTracker.pdb
 C:\Users\ADMIN\TrolleyTracker\obj\Debug\net10.0\TrolleyTracker.genruntimeconfig.cache
 C:\Users\ADMIN\TrolleyTracker\obj\Debug\net10.0\ref\TrolleyTracker.dll
+C:\Users\ADMIN\TrolleyTracker\obj\Debug\net10.0\TrolleyTracker.sourcelink.json
